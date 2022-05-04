@@ -1,0 +1,96 @@
+function inactive_input(){
+  var ui = SpreadsheetApp.getUi();
+  var list = ui.prompt('Enter the District ID of all students who no longer have ANY active subscriptions. Please make sure that each district ID is separated by a space.');
+
+  var new_list = list.getResponseText();
+  var array = new_list.split(" ");
+
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var new_Report = spreadsheet.getSheetByName("New Report");
+  var inactive_students_tab = spreadsheet.getSheetByName("Inactive Students");
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+
+    for (i = 0; i < array.length; i++){
+      var text_finder = active_List.getRange("C:C").createTextFinder(array[i]);
+      var finder = text_finder.findNext();
+      var row = finder.getRow();
+        active_List.getRange(row, 17, 1, 4).setValue(false);
+
+        
+
+    }
+
+
+
+}
+
+function inactive_students() {
+  
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var new_Report = spreadsheet.getSheetByName("New Report");
+  var inactive_students_tab = spreadsheet.getSheetByName("Inactive Students");
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+
+      var ui = SpreadsheetApp.getUi();
+      var response = ui.alert('Are you sure you want to continue? Clicking "Yes" will uncheck all boxes in the "Students" tab for each student who has a district ID listed in the "Inactive Students" tab.', ui.ButtonSet.YES_NO);
+
+      // Process the user's response.
+      if (response == ui.Button.YES) {
+        
+          var array = inactive_students_tab.getRange("A2:A").getValues();
+          for (i = 0; i < array.length; i++){
+           if (array[i][0] != "") 
+            {var text_finder = active_List.getRange("C:C").createTextFinder(array[i][0]);
+            var finder = text_finder.findNext();
+            var row = finder.getRow();
+            
+              active_List.getRange(row, 17, 1, 4).setValue(false);}
+
+          }
+
+      
+      }
+
+
+  
+}
+
+function inactive_student_report(){
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var new_Report = spreadsheet.getSheetByName("New Report");
+  var inactive_students_tab = spreadsheet.getSheetByName("Inactive Students");
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+  var clear_data = inactive_students_tab.getRange("A2:A").clearContent();
+  var query = inactive_students_tab.getRange("A2").setFormula('=ifna(QUERY(Students!$C$2:$T,"Select C Where E = \'Inactive\' and (Q = true or R = true or S = true or T = true) Order By D",0),"")');
+  var values = inactive_students_tab.getRange("A2:A").getValues();
+  inactive_students_tab.getRange("A2:A").setValues(values);
+  inactive_students_tab.getRange("B2:E").clearContent();
+
+  //Data Validation: Require Checkboxes for range Q:T on the Students Tab 
+    var formatting_cells = inactive_students_tab.getRange("A2:E2");
+    formatting_cells.copyFormatToRange(inactive_students_tab, 1, 5, 2, 10000);
+
+    var validation_range = inactive_students_tab.getRange("$B2:$E");
+    var validation_rule = SpreadsheetApp.newDataValidation().requireCheckbox().build();
+
+      validation_range.setDataValidation(validation_rule);
+
+        //For loop through every inactive student on the list. We want to imitate 
+        for (i = 2; i < inactive_students_tab.getLastRow(); i++){
+              var district_id = inactive_students_tab.getRange(i, 1).getValue();
+              if(district_id == ""){break;}
+                var finder = active_List.getRange("C:C").createTextFinder(district_id);
+                var updated_info = finder.findNext();
+                    if(updated_info != null){
+                      var row_info = updated_info.getRow();
+                      var check_marks = active_List.getRange(row_info, 17, 1, 4).getValues();
+                      inactive_students_tab.getRange(i, 2, 1, 4).setValues(check_marks);
+
+                    }
+              
+        }
+
+} //The team can then delete accounts for students listed in the Inactive student tab. Then create function that updates the "Students"tab with the new check boxes from the Inactive tab
