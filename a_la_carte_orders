@@ -1,0 +1,97 @@
+function a_la_carte_orders() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var tab_names = ["ADOBE","GRAMMARLY","MM-HST-STUDENT","MM-Parent","MM-Parent-STUDENT","RE/MS-STUDENT","PRODIGY"];
+  
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+  SpreadsheetApp.flush();
+
+  a_la_carte.getRange("A2:B").sort(2);
+  
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
+  
+
+  for (i = 0;i < tab_names.length;i++){
+    spreadsheet.getSheetByName(tab_names[i]).getRange("A2:Z").clearContent();
+
+  }
+
+  for(i = 2; i< 500; i++){
+      var subscription = a_la_carte.getRange(i,2).getValue();
+      //Only Active Student data should be transfered to each tab
+      var active_student = a_la_carte.getRange(i,4).getValue();
+      
+          if(subscription == ""){break;}
+          if(subscription == "ADOBE" && active_student != ""){adobe();}
+          if(subscription == "GRAMMARLY" && active_student != ""){grammarly();}
+          if(subscription == "PRODIGY" && active_student != ""){prodigy();}
+          if(subscription == "REGGSMATH" && active_student != ""){reggsmath();}
+  
+  }
+
+
+  
+}
+
+
+function adobe() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [["Adobe ID", student_info[11],,student_info[11],student_info[2],student_info[3],"US",,,,"OSP Students 2021-2022"]];
+        
+  spreadsheet.getSheetByName("ADOBE").appendRow(array[0]);
+  spreadsheet.getSheetByName("ADOBE").getDataRange().removeDuplicates();
+  spreadsheet.getSheetByName("ADOBE").getDataRange().setFontFamily("Poppins");
+  
+      
+}
+
+function grammarly() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[11],student_info[2] + " " + student_info[3]]];
+  var subscription_tab = spreadsheet.getSheetByName("Grammarly");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().removeDuplicates();
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
+}
+
+function prodigy() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[13],student_info[14],student_info[12],"Prodigy2022!","Pacific Coast Academy"]];
+  var subscription_tab = spreadsheet.getSheetByName("PRODIGY");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
+}
+
+function reggsmath() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[2],student_info[3],student_info[5],"accounts@pacificcoastacademy.org","S330487",student_info[4]]];
+  var subscription_tab = spreadsheet.getSheetByName("RE/MS-STUDENT");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
+  subscription_tab.getRange("C2:C").createTextFinder(0).replaceAllWith("K");
+  subscription_tab.getRange("C2:C").createTextFinder(-2).replaceAllWith("PreK");
+
+}
