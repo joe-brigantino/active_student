@@ -1,0 +1,18 @@
+function tutorme() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
+  var tutorme_tab = spreadsheet.getSheetByName("TUTORME");
+
+  tutorme_tab.getRange("A2:Z").clearContent();
+
+  tutorme_tab.getRange("A2").setFormula("=IFNA({QUERY('a la carte'!$A$3:$Y,\"Select C Where B = 'TUTORME' \",0);QUERY(Students!$A$1:$W,\"Select A Where D>5 and T = false and E = 'Active' \",0)},\"\")");
+  tutorme_tab.getRange("B2").setFormula("=IFNA({QUERY('a la carte'!$A$3:$Y,\"Select D Where B = 'TUTORME' \",0);QUERY(Students!$A$1:$W,\"Select B Where D>5 and T = false and E = 'Active' \",0)},\"\")");
+  tutorme_tab.getRange("C2").setFormula("=IFNA({QUERY('a la carte'!$A$3:$Y,\"Select L Where B = 'TUTORME' \",0);QUERY(Students!$A$1:$W,\"Select J Where D>5 and T = false and E = 'Active' \",0)},\"\")");
+  tutorme_tab.getRange("D2:D").setFormula("=IF($A2<>\"\",\"Tutorme2022!\",\"\")");
+
+  var values = tutorme_tab.getRange("A2:R").getValues();
+  tutorme_tab.getRange("A2:R").setValues(values);
+  tutorme_tab.getRange("A2:D").sort(3);
+  tutorme_tab.getDataRange().setFontFamily("Poppins");
+}
