@@ -1,7 +1,7 @@
 function a_la_carte_orders() {
   var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
   var a_la_carte = spreadsheet.getSheetByName("a la carte");
-  var tab_names = ["ADOBE","GRAMMARLY","MM-HST-STUDENT","MM-Parent","MM-Parent-STUDENT","RE/MS-STUDENT","PRODIGY"];
+  var tab_names = ["ADOBE","GRAMMARLY","MM-HST-STUDENT","MM-Parent","MM-Parent-STUDENT","RE/MS-STUDENT","PRODIGY","TUTORME"];
   
   var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
   SpreadsheetApp.flush();
@@ -27,6 +27,7 @@ function a_la_carte_orders() {
           if(subscription == "GRAMMARLY" && active_student != ""){grammarly();}
           if(subscription == "PRODIGY" && active_student != ""){prodigy();}
           if(subscription == "REGGSMATH" && active_student != ""){reggsmath();}
+          if(subscription == "TUTORME" && active_student != ""){tutorme();}
   
   }
 
@@ -93,5 +94,20 @@ function reggsmath() {
 
   subscription_tab.getRange("C2:C").createTextFinder(0).replaceAllWith("K");
   subscription_tab.getRange("C2:C").createTextFinder(-2).replaceAllWith("PreK");
+
+}
+
+function tutorme() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[2],student_info[3],student_info[11],"Tutorme2022!"]];
+  var subscription_tab = spreadsheet.getSheetByName("TUTORME");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
 
 }
