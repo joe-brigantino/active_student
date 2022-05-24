@@ -1,0 +1,172 @@
+function ixl_alacarte() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var a_la_carte_tab = spreadsheet.getSheetByName("a la carte");
+  var ixl_student = spreadsheet.getSheetByName("IXL - Student");
+  var ixl_teacher = spreadsheet.getSheetByName("IXL - Teacher");
+  var ixl_roster = spreadsheet.getSheetByName("IXL - Roster");
+
+  //Clear content for next batch of CSVs
+  ixl_student.getRange("A2:Z").clearContent();
+  ixl_teacher.getRange("A2:Z").clearContent();
+  ixl_roster.getRange("A2:Z").clearContent();
+
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
+
+  var array_values = a_la_carte_tab.getRange("A2:R").getValues();
+
+
+  var filter_ixl = array_values.filter(filter_function_ixl);
+  
+      var ixl_sliced = filter_ixl.map(function(ixl){
+        return ixl.slice(2, 18);
+      }
+      );
+      
+      if (ixl_sliced.length != 0){
+          
+          for (x=0; x<ixl_sliced.length; x++){
+            //Student Tab
+            var row_data = ixl_sliced[x];
+            var first_name = row_data[0];
+            var last_name = row_data[1];
+            var district_id = row_data[2];
+            var grade = row_data[3];
+            var teacher_emails = row_data[10] + "; " + row_data[15];
+            var student_email = row_data[9];
+
+            //Teacher Tab
+            var hst_first = row_data[13];
+            var hst_last = row_data[14];
+            var hst_email = row_data[15];
+            var parent_first = row_data[11];
+            var parent_last = row_data[12];
+            var parent_email = row_data[10];
+            
+            var reg = new RegExp("(.*)@", "");
+            var username = reg.exec(row_data[9])[1];
+
+            var student_array = [first_name, last_name, district_id, grade, teacher_emails, username, 'IXL2022!', student_email];
+            ixl_student.appendRow(student_array);
+            
+            var hst_array = [hst_first, hst_last, hst_email, hst_email];
+            var parent_array = [parent_first, parent_last, parent_email, parent_email];
+            ixl_teacher.appendRow(hst_array);
+            ixl_teacher.appendRow(parent_array);
+
+            var hst_student_roster = [hst_email, hst_email, district_id, 'student'];
+            var parent_student_roster = [parent_email, parent_email, district_id, 'student'];
+            var parent_roster = [parent_email, parent_email, parent_email, 'teacher'];
+            var hst_roster = [hst_email, hst_email, hst_email, 'teacher'];
+            ixl_roster.appendRow(hst_student_roster);
+            ixl_roster.appendRow(parent_student_roster);
+            ixl_roster.appendRow(parent_roster);
+            ixl_roster.appendRow(hst_roster);
+            
+            ixl_roster.getRange("A2:D").removeDuplicates();
+            ixl_student.getRange("A2:H").removeDuplicates();
+            ixl_teacher.getRange("A2:D").removeDuplicates();
+
+            ixl_roster.getRange("A2:D").setFontFamily("Poppins");
+            ixl_student.getRange("A2:H").setFontFamily("Poppins");
+            ixl_teacher.getRange("A2:D").setFontFamily("Poppins");
+
+          }
+
+          
+          var check_arrays = [ixl_sliced];
+          var array_lengths = ixl_sliced.length
+          
+          
+          var email_pause = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+
+          for(i=0; i<1; i++){
+            var array = check_arrays[i];
+            
+            for(x=0; x<array.length; x++){
+              var district_id = array[x][2];
+              var id_finder = active_List.createTextFinder(district_id).findNext().getRow();
+              active_List.getRange(id_finder, 20, 1, 1).setValue(true);
+        }
+          }
+            }
+  
+  
+
+}
+
+
+var filter_function_ixl = function(item){
+  if (item.indexOf("IXL") === -1){return false;}
+  else{return true;}
+}
+
+
+function ixl_activelist(){
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var brainpop_spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1BZLWzuSxtdJsoRYnvxUWZ70RV2M3RMd3z7tbNRk5Yv8/edit#gid=0");
+  var reports_tab = brainpop_spreadsheet.getSheetByName("Reports");
+  var active_List = spreadsheet.getSheetByName("Students");
+
+  //Query students who are active, and already have BrainPOP
+  var active_array = active_List.getRange("A2:Q").getValues();
+  var filter_list = active_array.filter(activelist_filter);
+  var filter_checks = filter_list.filter(check_filter_yes);
+
+      var filter_checks_sliced = filter_checks.map(function(brain){
+            return brain.slice(0, 16);
+          }
+          );
+
+
+  //Query students who are active, who do not have BrainPOP - by grade level package.
+  var filter_grade = filter_list.filter(grade_filter);
+  var filter_grade_check_no = filter_grade.filter(check_filter_no);
+  Logger.log(filter_grade_check_no);
+
+      var filter_grades_sliced = filter_grade.map(function(brain){
+            return brain.slice(0, 16);
+          }
+          );
+
+          Logger.log(filter_grade);
+
+  reports_tab.getRange(reports_tab.getLastRow()+1, 1, filter_checks_sliced.length, 16).setValues(filter_checks_sliced);
+  reports_tab.getRange(reports_tab.getLastRow()+1, 1, filter_grades_sliced.length, 16).setValues(filter_grades_sliced);
+
+  for(x=0; x<filter_grade_check_no.length; x++){
+      var district_id = filter_grade_check_no[x][2];
+      var id_finder = active_List.createTextFinder(district_id).findNext().getRow();
+      active_List.getRange(id_finder, 17, 1, 1).setValue(true);
+    }
+
+}
+
+var activelist_filter = function(active){
+  if (active.indexOf("Active") === -1){return false;}
+  else{return true;}
+}
+
+var check_filter_yes = function(active){
+  if (active.indexOf(true) === -1){return false;}
+  else{return true;}
+}
+
+var check_filter_no = function(active){
+  if (active.indexOf(false) === -1){return false;}
+  else{return true;}
+}
+
+var grade_filter = function(grade){
+  if (
+    grade.indexOf(4) === -1 &&
+    grade.indexOf(3) === -1 &&
+    grade.indexOf(2) === -1 &&
+    grade.indexOf(1) === -1 &&
+    grade.indexOf(0) === -1 &&
+    grade.indexOf(-2) === -1
+    ){return false;}
+  else{return true;}
+}
+
