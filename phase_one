@@ -1,0 +1,54 @@
+function phase_one(){
+  sort_new_report();
+  delete_Rows();
+  inspire();
+  new_Students();
+  //The Active scripts will be run on a timer. If_Active - If_Active_4 will go off weekly. That'll update students information like grade and teacher.
+
+}
+
+
+function new_Students() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var new_Report = spreadsheet.getSheetByName("New Report");
+  
+  //Set Formula for columns E. For the Active/Inactive Status. 
+  var status = active_List.getRange("E2:E").setFormula("=if($C2<>\"\",ifna(if(QUERY('New Report'!$M$2:$M,\"Select * Where M = \"&$C2&\" and M is not null Limit 1\",0)<>\"\",\"Active\",\"Inactive\"),\"Inactive\"),\"\")");
+
+    var copy_paste_status = active_List.getRange("E2:E").getValues();
+    active_List.getRange("E2:E").setValues(copy_paste_status);
+    
+
+//Formula set on Column X. This one's to check if there are any students on the New Report who is not on the "Students" tracker
+new_Report.getRange("X2:X").setFormula("=if(W2<>\"\",ifna(if(QUERY(Students!$C$2:$C,\"Select * Where C = \"&$M2&\" \",0)<>\"\",\"Existing Student\",\"New Student\"),\"\"),\"\")");
+SpreadsheetApp.flush();
+  var new_Report_values = new_Report.getRange("X2:X").getValues();
+    new_Report.getRange("X2:X").setValues(new_Report_values);
+
+
+//Formula to query the new students from the "New Report" tab to the "Students" tab. The first function will determine the cell where the query function should be pasted to 
+
+  //STEP ONE: Add the formula that will determine where (range) our new students can be pasted to. 
+var range_finder = active_List.getRange("A1").setFormula("=concatenate(\"$A\",COUNTIF(C1:C,\"<>\")+1)");
+var range_text = active_List.getRange("A1").getValue();
+
+  //STEP TWO: Once the range is determined, set formula that will pull students who are new. Reset cell A1 to original column title.
+active_List.getRange(range_text).setFormula("=ifna(QUERY('New Report'!$A$2:$X,\"Select B, D, M, H, 'Active', E, G, F, N, T, J, K, L, V, O, Q Where X is null and C is not null Order By H Label 'Active' '' \",0),\"\")");
+active_List.getRange("A1").setValue("First Name");
+var query_values = active_List.getRange(range_text+":$P").getValues();
+active_List.getRange(range_text+":$P").setValues(query_values);
+
+//Data Validation: Require Checkboxes for range Q:T on the Students Tab 
+var formatting_cells = active_List.getRange("A2:P2");
+formatting_cells.copyFormatToRange(active_List, 1, 16, 2, 10000);
+
+var validation_range = active_List.getRange("$Q2:$T");
+  var validation_rule = SpreadsheetApp.newDataValidation().requireCheckbox().build();
+
+  var last_row = active_List.getLastRow();
+
+  validation_range.setDataValidation(validation_rule);
+
+}
+
