@@ -1,0 +1,204 @@
+function phase_three(){
+  email_transfer();
+  mm_hst_emails();
+  mm_parent_emails();
+  brainpop_hst_email();
+  grade_level_check_boxes();
+
+}
+
+function email_transfer() {
+var open_csv_auto = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681');
+var urlname_csv_auto = open_csv_auto.getUrl();
+var open_yamm_merger = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1uoimT_R_NMY7KALWMpuiRQzuqn63fMkuLR-9u-n1lhc/edit#gid=2038604157');
+var urlname_yamm_merger = open_yamm_merger.getUrl();
+var email_tab = open_csv_auto.getSheetByName("Email");
+
+//Change the status to "RUN". This will enable the functions. During the Active scripts, the formulas are turned off to keep the speed of the script in tact.
+var status_change = email_tab.getRange("B1").setValue("RUN");
+SpreadsheetApp.flush();
+
+//                  0            1           2         3             4             5           6           7             8           9         10        11        12            13      14           
+var csv_array = ["ABCMOUSE", "ACCREADER", "ADOBE", "ADVACADEMY", "BRAINPOP", "BRAINPOP ELL", "GIZMOS", "GRAMMARLY", "OFFICE365", "MINECRAFT", "MOBY", "PRODIGY", "REGGSMATH", "SHMOOP", "TUTORME"];
+var yamm_array = ["ABC Mouse", "AR", "Adobe", "Adventure", "BrainPOP-Student", "BrainPOP-ELL", "Gizmos", "Grammarly", "Office", "Minecraft", "Moby-Student", "Prodigy", "RE/MS", "Shmoop", "TutorMe"];
+
+
+for (i = 0; i < csv_array.length; i++){
+
+
+email_tab.getRange("A1").setValue(csv_array[i]);
+
+
+var yamm_tab = open_yamm_merger.getSheetByName(yamm_array[i]);
+
+
+
+//Set formula on Yamm Merge sheet on the specific subscriptions' tab. Formula determines where Query function will be placed.
+var set_count_formula = yamm_tab.getRange("K1").setFormula('=concatenate("A",COUNTIF(A1:A,"<>")+1)');
+SpreadsheetApp.flush();
+
+//Setting Query Function to call data over from CSV sheet
+var set_query_in_cell = yamm_tab.getRange("K1").getValue();
+var query_data = yamm_tab.getRange(set_query_in_cell).setFormula('=ifna(QUERY(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=1999722013","Email!C2:G"),"Select * Where Col2 is not null",0),"")');
+SpreadsheetApp.flush();
+
+//Copy and paste values so there are no formulas present after script is finished.
+var data = yamm_tab.getRange("A2:E").getValues();
+var paste = yamm_tab.getRange("A2:E").setValues(data);
+var delete_formula = yamm_tab.getRange("K1").clearContent();
+  SpreadsheetApp.flush();
+  
+
+  }
+
+  
+
+}
+
+function mm_hst_emails(){
+var open_csv_auto = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681');
+var urlname_csv_auto = open_csv_auto.getUrl();
+var open_yamm_merger = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1uoimT_R_NMY7KALWMpuiRQzuqn63fMkuLR-9u-n1lhc/edit#gid=2038604157');
+var urlname_yamm_merger = open_yamm_merger.getUrl();
+var email_tab = open_csv_auto.getSheetByName("MM-HST");
+var yamm_tab = open_yamm_merger.getSheetByName("Moby-HST");
+
+
+//Set formula on Yamm Merge sheet on the specific subscriptions' tab. Formula determines where Query function will be placed.
+var set_count_formula = yamm_tab.getRange("K1").setFormula('=concatenate("A",COUNTIF(A1:A,"<>")+1)');
+SpreadsheetApp.flush();
+
+//Setting Query Function to call data over from CSV sheet
+var set_query_in_cell = yamm_tab.getRange("K1").getValue();
+var query_data = yamm_tab.getRange(set_query_in_cell).setFormula('=ifna(QUERY(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=1999722013","MM-HST!A2:C"),"Select * Where Col2 is not null",0),"")');
+SpreadsheetApp.flush();
+
+//Copy and paste values so there are no formulas present after script is finished.
+var data = yamm_tab.getRange("A2:E").getValues();
+var paste = yamm_tab.getRange("A2:E").setValues(data);
+var delete_formula = yamm_tab.getRange("K1").clearContent();
+  SpreadsheetApp.flush();
+
+  
+
+}
+
+
+
+function mm_parent_emails(){
+var open_csv_auto = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681');
+var urlname_csv_auto = open_csv_auto.getUrl();
+var open_yamm_merger = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1uoimT_R_NMY7KALWMpuiRQzuqn63fMkuLR-9u-n1lhc/edit#gid=2038604157');
+var urlname_yamm_merger = open_yamm_merger.getUrl();
+
+var insert_sheet = open_csv_auto.insertSheet(9).getName();
+
+var email_tab = open_csv_auto.getSheetByName(insert_sheet);
+email_tab.getRange("C1").setFormula('=ifna(QUERY(\'MM-Parent\'!$C$2:$C,"Select * Where C is not null",0),"")');
+email_tab.getRange("A1:A").setFormula('=ifna(if(C1<>"",QUERY(\'New Report\'!$J$2:$L,"Select K, L Where J = \'"&$C1&"\' Limit 1",0),""),"")');
+var yamm_tab = open_yamm_merger.getSheetByName("Moby-Parent");
+SpreadsheetApp.flush();
+
+var data = email_tab.getRange("A1:C").getValues();
+
+var paste_data = email_tab.getRange("A1:C").setValues(data);
+SpreadsheetApp.flush();
+
+var set_formula = yamm_tab.getRange("L1").setFormula('=concatenate("A",COUNTIF(A1:A,"<>")+1)');
+var range = yamm_tab.getRange("L1").getValue();
+
+for (i = 0; i < data.length; i++){
+var set_data = yamm_tab.appendRow(data[i]);
+if(data[i][0] == ''){break};
+
+}
+
+var delete_sheet = open_csv_auto.getSheetByName(insert_sheet);
+open_csv_auto.deleteSheet(delete_sheet);
+var range = yamm_tab.getRange("L1").clearContent();
+
+}
+
+function brainpop_hst_email(){
+var open_csv_auto = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681');
+var open_yamm_merger = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1uoimT_R_NMY7KALWMpuiRQzuqn63fMkuLR-9u-n1lhc/edit#gid=2038604157');
+var brainpop_sheet = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1bdtwSGNCuJ1ktqIzmZ-o5xg7BRLp6n-xFoupKiBTYmA/edit#gid=1941438307');
+var yamm_brainpop = open_yamm_merger.getSheetByName("BrainPOP-HST");
+var brainpop_range = yamm_brainpop.getRange("K1");
+brainpop_range.setFormula('=concatenate("A",COUNTIF(A1:A,"<>")+1)');
+SpreadsheetApp.flush();
+
+var data = brainpop_range.getValue();
+
+var set_query = yamm_brainpop.getRange(data).setFormula('=QUERY(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1bdtwSGNCuJ1ktqIzmZ-o5xg7BRLp6n-xFoupKiBTYmA/edit#gid=1941438307","TEACHERS!E2:H"),"Select Col1, Col2, Col4 Where Col4 contains \'PACIFIC\' ",0)');
+SpreadsheetApp.flush();
+
+var copy_data = yamm_brainpop.getRange("A2:C").getValues();
+var paste_data = yamm_brainpop.getRange("A2:C").setValues(copy_data);
+
+yamm_brainpop.getRange("K1").clearContent();
+
+yamm_brainpop.getRange("A2:D").removeDuplicates([3]);
+
+yamm_brainpop.getDataRange().setFontFamily("Poppins");
+
+
+}
+
+function grade_level_check_boxes() {
+
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var email_tab = spreadsheet.getSheetByName("Email");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var run_formula = email_tab.getRange("B1").setValue("PAUSE");
+  SpreadsheetApp.flush;
+
+  var csv_array = ["BRAINPOP", "BRAINPOP ELL", "MOBY", "SHMOOP", "TUTORME"];
+  
+
+  for (x = 0; x < csv_array.length; x++){
+    SpreadsheetApp.flush();
+    var email_array = [];
+    var subscription = email_tab.getRange("A1").setValue(csv_array[x]);
+    SpreadsheetApp.flush();
+
+    for (i = 2; i <5000; i++){
+      
+      var student_email = email_tab.getRange(i,1).getValue(); 
+        if(student_email == ""){break};
+      //Logger.log(student_email);
+
+      var new_email_array = email_array.push(student_email);
+    }
+
+    //Logger.log(email_array);
+
+    for (i = 0; i < email_array.length; i++){
+      
+      var finder = active_List.getRange("J:J").createTextFinder(email_array[i]);
+      var match = finder.findNext();
+
+
+      var row_info = match.getRow();
+      //Logger.log(row_info);
+
+      
+      if(email_tab.getRange("A1").getValue() == "BRAINPOP"){
+          active_List.getRange(row_info, 17).setValue(true);}
+        
+      if(email_tab.getRange("A1").getValue() == "BRAINPOP ELL")
+      {active_List.getRange(row_info, 17).setValue(true);}
+
+      if(email_tab.getRange("A1").getValue() == "MOBY")
+      {active_List.getRange(row_info, 18).setValue(true);}
+
+      if(email_tab.getRange("A1").getValue() == "SHMOOP")
+      {active_List.getRange(row_info, 19).setValue(true);}
+
+      if(email_tab.getRange("A1").getValue() == "TUTORME")
+      {active_List.getRange(row_info, 20).setValue(true);}
+      
+      }
+
+  }
+}
