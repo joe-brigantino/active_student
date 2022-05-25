@@ -1,0 +1,42 @@
+function if_Active() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var new_Report = spreadsheet.getSheetByName("New Report");
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+    
+
+  for (let i = 2; i < 1500; i++)
+    {var status = active_List.getRange(i,5);
+     if(status = "Active"){
+       var district_id = active_List.getRange(i,3).getValue();
+       var finder = new_Report.getRange("M:M").createTextFinder(district_id);
+       var updated_info = finder.findNext();
+       
+
+        if(updated_info != null){
+          var row_info = updated_info.getRow();
+          var first_Name = new_Report.getRange(row_info,2).getValues();
+          var last_Name = new_Report.getRange(row_info,4).getValues();
+          var grade_Level = new_Report.getRange(row_info,8).getValues();
+          var scope_Name = new_Report.getRange(row_info,5).getValues();
+          var program = new_Report.getRange(row_info,7).getValues();
+          var start_Date = new_Report.getRange(row_info,6).getValues();
+          var finish_date = new_Report.getRange(row_info,14).getValues();
+          var student_email = new_Report.getRange(row_info,20).getValues();
+          var parent_email = new_Report.getRange(row_info,10).getValues();
+          var parent_first = new_Report.getRange(row_info,11).getValues();
+          var parent_last = new_Report.getRange(row_info,12).getValues();
+          var teacher_first = new_Report.getRange(row_info,22).getValues();
+          var teacher_last = new_Report.getRange(row_info,15).getValues();
+          var teacher_email = new_Report.getRange(row_info,17).getValues();
+
+           var array = [[grade_Level, "Active", scope_Name, program, start_Date, finish_date, student_email, parent_email, parent_first, parent_last, teacher_first, teacher_last, teacher_email]];
+           active_List.getRange(i, 4, 1, 13).setValues(array);
+           
+               
+        }
+     }
+  
+    }
+
+}
