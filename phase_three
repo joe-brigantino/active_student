@@ -8,49 +8,50 @@ function phase_three(){
 }
 
 function email_transfer() {
-var open_csv_auto = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681');
-var urlname_csv_auto = open_csv_auto.getUrl();
-var open_yamm_merger = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1uoimT_R_NMY7KALWMpuiRQzuqn63fMkuLR-9u-n1lhc/edit#gid=2038604157');
-var urlname_yamm_merger = open_yamm_merger.getUrl();
-var email_tab = open_csv_auto.getSheetByName("Email");
+  var open_csv_auto = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681');
+  var urlname_csv_auto = open_csv_auto.getUrl();
+  var open_yamm_merger = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1uoimT_R_NMY7KALWMpuiRQzuqn63fMkuLR-9u-n1lhc/edit#gid=2038604157');
+  var urlname_yamm_merger = open_yamm_merger.getUrl();
+  var email_tab = open_csv_auto.getSheetByName("Email");
 
-//Change the status to "RUN". This will enable the functions. During the Active scripts, the formulas are turned off to keep the speed of the script in tact.
-var status_change = email_tab.getRange("B1").setValue("RUN");
-SpreadsheetApp.flush();
+  //                  0            1           2         3             4             5           6           7             8           9         10        11        12            13     14           
+var csv_subs = ["ABCMOUSE", "ACCREADER", "ADOBE", "ADVACADEMY", "BRAINPOP", "BRAINPOP ELL", "GIZMOS", "GRAMMARLY", "IXL", "OFFICE365", "MINECRAFT", "MOBY", "PRODIGY", "REGGSMATH", "SHMOOP", "TUTORME"];
+var yamm_subs = ["ABC Mouse", "AR", "Adobe", "Adventure", "BrainPOP-Student", "BrainPOP-ELL", "Gizmos", "Grammarly", "IXL-Student", "Office", "Minecraft", "Moby-Student", "Prodigy", "RE/MS", "Shmoop", "TutorMe"];
 
-//                  0            1           2         3             4             5           6           7             8           9         10        11        12            13      14           
-var csv_array = ["ABCMOUSE", "ACCREADER", "ADOBE", "ADVACADEMY", "BRAINPOP", "BRAINPOP ELL", "GIZMOS", "GRAMMARLY", "OFFICE365", "MINECRAFT", "MOBY", "PRODIGY", "REGGSMATH", "SHMOOP", "TUTORME"];
-var yamm_array = ["ABC Mouse", "AR", "Adobe", "Adventure", "BrainPOP-Student", "BrainPOP-ELL", "Gizmos", "Grammarly", "Office", "Minecraft", "Moby-Student", "Prodigy", "RE/MS", "Shmoop", "TutorMe"];
-
-
-for (i = 0; i < csv_array.length; i++){
-
-
-email_tab.getRange("A1").setValue(csv_array[i]);
-
-
-var yamm_tab = open_yamm_merger.getSheetByName(yamm_array[i]);
-
-
-
-//Set formula on Yamm Merge sheet on the specific subscriptions' tab. Formula determines where Query function will be placed.
-var set_count_formula = yamm_tab.getRange("K1").setFormula('=concatenate("A",COUNTIF(A1:A,"<>")+1)');
-SpreadsheetApp.flush();
-
-//Setting Query Function to call data over from CSV sheet
-var set_query_in_cell = yamm_tab.getRange("K1").getValue();
-var query_data = yamm_tab.getRange(set_query_in_cell).setFormula('=ifna(QUERY(IMPORTRANGE("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=1999722013","Email!C2:G"),"Select * Where Col2 is not null",0),"")');
-SpreadsheetApp.flush();
-
-//Copy and paste values so there are no formulas present after script is finished.
-var data = yamm_tab.getRange("A2:E").getValues();
-var paste = yamm_tab.getRange("A2:E").setValues(data);
-var delete_formula = yamm_tab.getRange("K1").clearContent();
-  SpreadsheetApp.flush();
+for(x=0; x<csv_subs.length; x++){
   
+var yamm_tab = open_yamm_merger.getSheetByName(yamm_subs[x]);
+    
+    email_tab.getRange("A1").setValue(csv_subs[x]);
+    email_tab.getRange("B1").setValue("RUN");
+    SpreadsheetApp.flush();
 
-  }
+    var array = yamm_tab.getRange("A1:A").getValues();
+    var new_array = [];
 
+    //Find the array length of the yamm tab
+    for (i = 0; i <array.length ; i++){
+
+        if (array[i][0] != ""){
+      new_array.push(array[i][0]);
+      }
+    }
+        
+    var csv_array = email_tab.getRange("D2:D").getValues();
+    var csv_new_array = [];
+    //Find the array length of the CSV Email tab. 
+    for (i = 0; i <csv_array.length ; i++){
+      
+        if (csv_array[i][0] != ""){
+        csv_new_array.push(csv_array[i][0]);
+      }
+    }
+    
+//Get the destination range on the YAMM tab using the combination of new arrays from the YAMM and CSV tabs
+
+var get_data = email_tab.getRange("C2:"+"G"+(csv_new_array.length+1)).getValues();
+var paste_data = yamm_tab.getRange("A"+(new_array.length+1)+":"+"E"+(csv_new_array.length+new_array.length)).setValues(get_data);
+}
   
 
 }
