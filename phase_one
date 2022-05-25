@@ -52,3 +52,69 @@ var validation_range = active_List.getRange("$Q2:$T");
 
 }
 
+function sort_new_report() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var sheet = spreadsheet.getSheetByName("New Report");
+  var rows = sheet.getDataRange();
+  var numRows = rows.getNumRows();
+  var values = rows.getValues();
+
+  sheet.getDataRange().setFontFamily("Poppins");
+
+  sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns()).activate();
+  spreadsheet.getActiveRange().offset(1, 0, spreadsheet.getActiveRange().getNumRows() - 1).sort([{column: 23, ascending: true}, {column: 21, ascending: true}, {column: 6, ascending: true}]);
+  spreadsheet.getActiveRange().offset(1, 0, spreadsheet.getActiveRange().getNumRows() - 1).activate();
+  spreadsheet.getActiveRange().removeDuplicates([13]).activate();
+
+  
+
+};
+
+function delete_Rows(){
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var sheet = spreadsheet.getSheetByName("New Report");
+  var rows = sheet.getDataRange();
+  var numRows = rows.getNumRows();
+  var values = rows.getValues();
+
+  var rowsDeleted = 0;
+    for (var i = 0; i <= numRows - 1; i++){
+      var row = values[i];
+      if (row[22] == '' && row[21] != ''){
+        sheet.deleteRow((parseInt(i)+1) - rowsDeleted);
+        rowsDeleted++
+      }
+    }
+}
+
+function inspire() {
+    var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+    var report = spreadsheet.getSheetByName("New Report");
+    var new_student = spreadsheet.getSheetByName("Students");
+    
+      var range_finder
+      var textFinder_inspire = report.createTextFinder('@inspireschools.org');
+      
+      
+      textFinder_inspire.replaceAllWith('@pacificcoastacademy.org');
+      
+
+
+
+   
+        var textFinder_inspire_report = report.createTextFinder('@inspireschools.org');
+        var textFinder_edu_report = report.createTextFinder('@edu.inspireschools.org');
+        var textFinder_inspire_new = new_student.createTextFinder('@inspireschools.org');
+        var textFinder_edu_new = new_student.createTextFinder('@edu.inspireschools.org');
+
+
+        
+        textFinder_inspire_report.replaceAllWith('@pacificcoastacademy.org');
+        textFinder_inspire_new.replaceAllWith('@pacificcoastacademy.org');
+        textFinder_edu_report.replaceAllWith('@pacificcoastacademy.org');
+        textFinder_edu_new.replaceAllWith('@pacificcoastacademy.org');
+        
+          
+    }
+
+
