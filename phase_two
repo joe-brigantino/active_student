@@ -1,0 +1,388 @@
+function phase_two() {
+  a_la_carte_orders();
+  moby();
+  shmoop();
+  all_brainpop();
+  
+}
+
+function a_la_carte_orders() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var tab_names = ["ADOBE","GRAMMARLY","MM-HST-STUDENT","MM-Parent","MM-Parent-STUDENT","RE/MS-STUDENT","PRODIGY","TUTORME"];
+  
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+  SpreadsheetApp.flush();
+
+  a_la_carte.getRange("A2:B").sort(2);
+  
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
+  
+
+  for (i = 0;i < tab_names.length;i++){
+    spreadsheet.getSheetByName(tab_names[i]).getRange("A2:Z").clearContent();
+
+  }
+
+  for(i = 2; i< 500; i++){
+      var subscription = a_la_carte.getRange(i,2).getValue();
+      //Only Active Student data should be transfered to each tab
+      var active_student = a_la_carte.getRange(i,4).getValue();
+      
+          if(subscription == ""){break;}
+          if(subscription == "ADOBE" && active_student != ""){adobe();}
+          if(subscription == "GRAMMARLY" && active_student != ""){grammarly();}
+          if(subscription == "PRODIGY" && active_student != ""){prodigy();}
+          if(subscription == "REGGSMATH" && active_student != ""){reggsmath();}
+          if(subscription == "TUTORME" && active_student != ""){tutorme();}
+  
+  }
+
+
+  
+}
+
+
+function adobe() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [["Adobe ID", student_info[11],,student_info[11],student_info[2],student_info[3],"US",,,,"OSP Students 2021-2022"]];
+        
+  spreadsheet.getSheetByName("ADOBE").appendRow(array[0]);
+  spreadsheet.getSheetByName("ADOBE").getDataRange().removeDuplicates();
+  spreadsheet.getSheetByName("ADOBE").getDataRange().setFontFamily("Poppins");
+  
+      
+}
+
+function grammarly() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[11],student_info[2] + " " + student_info[3]]];
+  var subscription_tab = spreadsheet.getSheetByName("Grammarly");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().removeDuplicates();
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
+}
+
+function prodigy() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[13],student_info[14],student_info[12],"Prodigy2022!","Pacific Coast Academy"]];
+  var subscription_tab = spreadsheet.getSheetByName("PRODIGY");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
+}
+
+function reggsmath() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[2],student_info[3],student_info[5],"accounts@pacificcoastacademy.org","S330487",student_info[4]]];
+  var subscription_tab = spreadsheet.getSheetByName("RE/MS-STUDENT");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
+  subscription_tab.getRange("C2:C").createTextFinder(0).replaceAllWith("K");
+  subscription_tab.getRange("C2:C").createTextFinder(-2).replaceAllWith("PreK");
+
+}
+
+function tutorme() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var a_la_carte = spreadsheet.getSheetByName("a la carte");
+  var range = a_la_carte.getRange(i,1,5000,18);
+  var student_info = range.getValues()[0];
+
+  var array = [[student_info[2],student_info[3],student_info[11],"Tutorme2022!"]];
+  var subscription_tab = spreadsheet.getSheetByName("TUTORME");
+  
+  subscription_tab.appendRow(array[0]);
+  subscription_tab.getDataRange().setFontFamily("Poppins");
+
+
+}
+
+function moby(){
+var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
+
+    mm_hst();
+    mm_hst_student();
+    mm_parent();
+    mm_parent_student()
+}
+
+function mm_hst() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var moby_tab = spreadsheet.getSheetByName("MM-HST");
+
+  moby_tab.getRange("A2:Z").clearContent();
+  
+  moby_tab.getRange(2,1).setFormula("=unique(QUERY(Students!$A$2:$W,\"Select N, O, P Where D <9 and R = false and E = 'Active' \",0))");
+  moby_tab.getRange("D2:D").setFormula("=ifna(IF(QUERY(QUERY(IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/1v3IcniEzqfQ7D6n3g9FARjSExfgdjPf1C__kXnVUHGc/edit#gid=456489907\",\"Moby-HST!A2:C\")),\"Select Col3 Where Col3 = '\"&$C2&\"' \",0)<>\"\",\"\",\"\"),\"MobyMax2021!\")");
+  moby_tab.getRange("G2:G").setFormula("=IF(D2<>\"\",\"Pacific Coast Academy\",\"\")");
+
+  var values = moby_tab.getRange("A2:G").getValues();
+  moby_tab.getRange("A2:G").setValues(values);
+
+  moby_tab.getDataRange().setFontFamily("Poppins");
+
+  //If teachers are already on the mail merge sheet, we won't have to email them. So this script will delete teachers who do not need another email.
+  var teachers = moby_tab.getDataRange().getLastRow();
+      for(i=1;i<teachers+1;i++){
+       var school_name_null = moby_tab.getRange(i,7).getValue();
+       if (school_name_null == ""){moby_tab.getRange(i,1,1,8).clearContent()}
+      }
+
+      moby_tab.getRange("A2:G").sort(2);
+
+
+}
+
+function mm_hst_student() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var moby_tab = spreadsheet.getSheetByName("MM-HST-STUDENT");
+
+  moby_tab.getRange("A2:Z").clearContent();
+  
+  moby_tab.getRange(2,1).setFormula('=ifna(QUERY(Students!$A$2:$W,"Select A, B, C Where D <9 and R = false and E = \'Active\' ",0),"")');
+  moby_tab.getRange(2,4).setFormula('=ifna(arrayformula(if(QUERY(Students!$A$2:$W,"Select D Where D <9 and R = false and E = \'Active\' ",0)=-2,0,QUERY(Students!$A$2:$W,"Select D Where D <9 and R = false and E = \'Active\' ",0))),"")');
+  moby_tab.getRange("E2:E").setFormula("=lower(CONCATENATE(LEFT(A2,1),LEFT(B2,1),C2))");
+  moby_tab.getRange("F2:F").setFormula("=IF(C2<>\"\",\"Mobymax2021!\",\"\")");
+  moby_tab.getRange(2,7).setFormula('=ifna(QUERY(Students!$A$2:$W,"Select P Where D <9 and R = false and E = \'Active\' ",0),"")');
+
+  var values = moby_tab.getRange("A2:G").getValues();
+  moby_tab.getRange("A2:G").setValues(values);
+
+  moby_tab.getDataRange().setFontFamily("Poppins");
+}
+
+function mm_parent() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var moby_tab = spreadsheet.getSheetByName("MM-Parent");
+
+  moby_tab.getRange("A2:Z").clearContent();
+  
+  moby_tab.getRange("A2:A").setFormula("=IF(C2<>\"\",\"Parent\",\"\")");
+  moby_tab.getRange("B2:B").setFormula('=ifna(if(C2<>"",QUERY(Students!$A$2:$W,"Select C Where K = \'"&$C2&"\' Limit 1",0),""),"")');
+  moby_tab.getRange(2,3).setFormula('=ifna(unique(QUERY(Students!$A$2:$W,"Select K Where D <9 and R = false and E =  \'Active\' ",0)),"")');
+  moby_tab.getRange("D2:D").setFormula("=ifna(IF(QUERY(QUERY(IMPORTRANGE(\"https://docs.google.com/spreadsheets/d/1v3IcniEzqfQ7D6n3g9FARjSExfgdjPf1C__kXnVUHGc/edit#gid=456489907\",\"Moby-Parent!A2:C\")),\"Select Col3 Where Col3 = '\"&$C2&\"' \",0)<>\"\",\"\",\"\"),\"MobyMax2021!\")");
+  moby_tab.getRange("G2:G").setFormula("=IF(D2<>\"\",\"Pacific Coast Academy\",\"\")");
+
+
+  var values = moby_tab.getRange("A2:N").getValues();
+  moby_tab.getRange("A2:N").setValues(values);
+
+  moby_tab.getDataRange().setFontFamily("Poppins");
+
+  //If parents are already on the mail merge sheet, we won't have to email them. So this script will delete parents who do not need another email.
+  var parents = moby_tab.getDataRange().getLastRow();
+      for(i=1;i<parents+1;i++){
+       var school_name_null = moby_tab.getRange(i,7).getValue();
+       if (school_name_null == ""){moby_tab.getRange(i,1,1,8).clearContent()}
+      }
+
+      moby_tab.getRange("A2:G").sort(3);
+
+}
+
+function mm_parent_student() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var moby_tab = spreadsheet.getSheetByName("MM-Parent-STUDENT");
+
+  moby_tab.getRange("A2:Z").clearContent();
+  
+  moby_tab.getRange(2,1).setFormula('=ifna(QUERY(Students!$A$2:$W,"Select A, B, C Where D <9 and R = false and E = \'Active\' ",0),"")');
+  moby_tab.getRange(2,4).setFormula('=ifna(arrayformula(if(QUERY(Students!$A$2:$W,"Select D Where D <9 and R = false and E = \'Active\' ",0)=-2,0,QUERY(Students!$A$2:$W,"Select D Where D <9 and R = false and E = \'Active\' ",0))),"")');
+  moby_tab.getRange("E2:E").setFormula("=lower(CONCATENATE(LEFT(A2,1),LEFT(B2,1),C2))");
+  moby_tab.getRange("F2:F").setFormula("=IF(C2<>\"\",\"Mobymax2021!\",\"\")");
+  moby_tab.getRange(2,7).setFormula('=ifna(QUERY(Students!$A$2:$W,"Select K Where D <9 and R = false and E = \'Active\' ",0),"")');
+
+  var values = moby_tab.getRange("A2:G").getValues();
+  moby_tab.getRange("A2:G").setValues(values);
+
+  moby_tab.getDataRange().setFontFamily("Poppins");
+
+}
+
+function shmoop() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
+
+  var shmoop_tab = spreadsheet.getSheetByName("SHMOOP");
+
+  shmoop_tab.getRange("A2:Z").clearContent();
+  
+  shmoop_tab.getRange("G2").setFormula("=IFNA({QUERY('a la carte'!$A$3:$Y,\"Select L Where B = 'SHMOOP' \",0);QUERY(Students!$A$1:$W,\"Select J Where D>8 and S = false and E = 'Active' \",0)},\"\")");
+  shmoop_tab.getRange("M2").setFormula("=IFNA({QUERY('a la carte'!$A$3:$Y,\"Select L Where B = 'SHMOOP' \",0);QUERY(Students!$A$1:$W,\"Select J Where D>8 and S = false and E = 'Active' \",0)},\"\")");
+  shmoop_tab.getRange("I2").setFormula("=IFNA({QUERY('a la carte'!$A$3:$Y,\"Select C Where B = 'SHMOOP' \",0);QUERY(Students!$A$1:$W,\"Select A Where D>8 and S = false and E = 'Active' \",0)},\"\")");
+  shmoop_tab.getRange("J2").setFormula("=IFNA({QUERY('a la carte'!$A$3:$Y,\"Select D Where B = 'SHMOOP' \",0);QUERY(Students!$A$1:$W,\"Select B Where D>8 and S = false and E = 'Active' \",0)},\"\")");
+  shmoop_tab.getRange("R2:R").setFormula("=IF(M2<>\"\",\"Shmoop2022!\",\"\")");
+
+  var values = shmoop_tab.getRange("A2:R").getValues();
+  shmoop_tab.getRange("A2:R").setValues(values);
+  shmoop_tab.getDataRange().setFontFamily("Poppins");
+
+}
+
+function all_brainpop(){
+  var brainpop_spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1BZLWzuSxtdJsoRYnvxUWZ70RV2M3RMd3z7tbNRk5Yv8/edit#gid=0"); 
+  var sheet = brainpop_spreadsheet.getSheetByName("Reports");
+  var reports_tab = brainpop_spreadsheet.getSheetByName("Reports").getRange("A2:Z").clearContent();
+  var reports_poppins = brainpop_spreadsheet.getSheetByName("Reports").getRange("A1:Z").setFontFamily("Poppins");
+
+
+  brainpop_students_alacarte();
+  brainpop_activelist();
+
+  var delete_duplicates = sheet.getRange("A2:Z").removeDuplicates();
+}
+
+
+
+function brainpop_students_alacarte() {
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var brainpop_spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1BZLWzuSxtdJsoRYnvxUWZ70RV2M3RMd3z7tbNRk5Yv8/edit#gid=0");
+  var reports_tab = brainpop_spreadsheet.getSheetByName("Reports");
+  var active_List = spreadsheet.getSheetByName("Students");
+  var a_la_carte_tab = spreadsheet.getSheetByName("a la carte");
+  var email_tab = spreadsheet.getSheetByName("Email").getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
+
+  var array_values = a_la_carte_tab.getRange("A2:R").getValues();
+
+
+  var filter_brainpop = array_values.filter(filter_function_brainpop);
+  var filter_brainpopell = array_values.filter(filter_function_brainpopell);
+  
+      var brainpop_sliced = filter_brainpop.map(function(brain){
+        return brain.slice(2, 18);
+      }
+      );
+      
+      var brainpopell_sliced = filter_brainpopell.map(function(brainell){
+        return brainell.slice(2, 18);
+      }
+      );
+  
+  var last_row = reports_tab.getLastRow();
+  reports_tab.getRange(last_row+1, 1, brainpop_sliced.length, 16).setValues(brainpop_sliced);
+
+  var last_row = reports_tab.getLastRow();
+  reports_tab.getRange(last_row+1, 1, brainpopell_sliced.length, 16).setValues(brainpopell_sliced);
+  
+  var check_arrays = [brainpop_sliced, brainpopell_sliced];
+  var array_lengths = brainpop_sliced.length + brainpopell_sliced.length;
+  
+  
+  var email_pause = spreadsheet.getSheetByName("Email").getRange("B1").setValue("PAUSE");
+
+  for(i=0; i<2; i++){
+    var array = check_arrays[i];
+    
+    for(x=0; x<array.length; x++){
+      var district_id = array[x][2];
+      var id_finder = active_List.createTextFinder(district_id).findNext().getRow();
+      active_List.getRange(id_finder, 17, 1, 1).setValue(true);
+    }
+  }
+
+}
+
+
+var filter_function_brainpop = function(item){
+  if (item.indexOf("BRAINPOP") === -1){return false;}
+  else{return true;}
+}
+
+var filter_function_brainpopell = function(item){
+  if (item.indexOf("BRAINPOP ELL") === -1){return false;}
+  else{return true;}
+}
+
+function brainpop_activelist(){
+  var spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1CSo2OnHML-wzPXzX378vmOE9AeZbJCQDSa20XKFx48I/edit#gid=256584681");
+  var brainpop_spreadsheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1BZLWzuSxtdJsoRYnvxUWZ70RV2M3RMd3z7tbNRk5Yv8/edit#gid=0");
+  var reports_tab = brainpop_spreadsheet.getSheetByName("Reports");
+  var active_List = spreadsheet.getSheetByName("Students");
+
+  //Query students who are active, and already have BrainPOP
+  var active_array = active_List.getRange("A2:Q").getValues();
+  var filter_list = active_array.filter(activelist_filter);
+  var filter_checks = filter_list.filter(check_filter_yes);
+
+      var filter_checks_sliced = filter_checks.map(function(brain){
+            return brain.slice(0, 16);
+          }
+          );
+
+
+  //Query students who are active, who do not have BrainPOP - by grade level package.
+  var filter_grade = filter_list.filter(grade_filter);
+  var filter_grade_check_no = filter_grade.filter(check_filter_no);
+  Logger.log(filter_grade_check_no);
+
+      var filter_grades_sliced = filter_grade.map(function(brain){
+            return brain.slice(0, 16);
+          }
+          );
+
+          Logger.log(filter_grade);
+
+  reports_tab.getRange(reports_tab.getLastRow()+1, 1, filter_checks_sliced.length, 16).setValues(filter_checks_sliced);
+  reports_tab.getRange(reports_tab.getLastRow()+1, 1, filter_grades_sliced.length, 16).setValues(filter_grades_sliced);
+
+  for(x=0; x<filter_grade_check_no.length; x++){
+      var district_id = filter_grade_check_no[x][2];
+      var id_finder = active_List.createTextFinder(district_id).findNext().getRow();
+      active_List.getRange(id_finder, 17, 1, 1).setValue(true);
+    }
+
+}
+
+var activelist_filter = function(active){
+  if (active.indexOf("Active") === -1){return false;}
+  else{return true;}
+}
+
+var check_filter_yes = function(active){
+  if (active.indexOf(true) === -1){return false;}
+  else{return true;}
+}
+
+var check_filter_no = function(active){
+  if (active.indexOf(false) === -1){return false;}
+  else{return true;}
+}
+
+var grade_filter = function(grade){
+  if (
+    grade.indexOf(4) === -1 &&
+    grade.indexOf(3) === -1 &&
+    grade.indexOf(2) === -1 &&
+    grade.indexOf(1) === -1 &&
+    grade.indexOf(0) === -1 &&
+    grade.indexOf(-2) === -1
+    ){return false;}
+  else{return true;}
+}
