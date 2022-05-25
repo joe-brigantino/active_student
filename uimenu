@@ -1,0 +1,34 @@
+function onOpen(e) {
+
+var menu = SpreadsheetApp.getUi()
+
+menu.createMenu('OSP Team')
+
+  .addSubMenu(menu.createMenu('Phase One - New Report')
+    .addItem('Determine New Students', 'phase_one')
+  )
+
+    //Menu for Phase Two - CSV creation
+  .addSubMenu(menu.createMenu('Phase Two - CSV Creation')
+    .addItem('Create all CSV files', 'phase_two')
+    .addItem('A La Carte Orders Only','a_la_carte_orders')
+    .addItem('MobyMax Only','moby')
+    .addItem('Shmoop Only','shmoop')
+    .addItem('TutorMe Only','tutorme')
+  )
+    //Menu for Phase Three - Email Transfers and Check Boxes
+  .addSubMenu(menu.createMenu('Phase Three - Update Information')
+    .addItem('Transfer Emails & Check Boxes', 'phase_three')
+  )
+    //Menu for Phase Four - Inactive Student Report and subscription updates
+  .addSubMenu(menu.createMenu('Phase Four - Inactive Students')
+    .addItem('Run Inactive Student Report', 'inactive_student_report')
+    .addItem('Update Students Check Marks','inactive_students')
+    
+  )
+  
+  .addToUi();
+
+
+}
+
