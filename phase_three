@@ -13,46 +13,81 @@ function email_transfer() {
   var open_yamm_merger = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1uoimT_R_NMY7KALWMpuiRQzuqn63fMkuLR-9u-n1lhc/edit#gid=2038604157');
   var urlname_yamm_merger = open_yamm_merger.getUrl();
   var email_tab = open_csv_auto.getSheetByName("Email");
+  email_tab.getRange("B1").setValue("RUN");
+  SpreadsheetApp.flush();
 
-  //                  0            1           2         3             4             5           6           7             8           9         10        11        12            13     14           
-var csv_subs = ["ABCMOUSE", "ACCREADER", "ADOBE", "ADVACADEMY", "BRAINPOP", "BRAINPOP ELL", "GIZMOS", "GRAMMARLY", "IXL", "OFFICE365", "MINECRAFT", "MOBY", "PRODIGY", "REGGSMATH", "SHMOOP", "TUTORME"];
-var yamm_subs = ["ABC Mouse", "AR", "Adobe", "Adventure", "BrainPOP-Student", "BrainPOP-ELL", "Gizmos", "Grammarly", "IXL-Student", "Office", "Minecraft", "Moby-Student", "Prodigy", "RE/MS", "Shmoop", "TutorMe"];
 
-for(x=0; x<csv_subs.length; x++){
-  
-var yamm_tab = open_yamm_merger.getSheetByName(yamm_subs[x]);
-    
-    email_tab.getRange("A1").setValue(csv_subs[x]);
-    email_tab.getRange("B1").setValue("RUN");
-    SpreadsheetApp.flush();
+var csv_subs = 
+["ABCMOUSE", 
+  "ACCREADER", 
+  "ADOBE", 
+  "ADVACADEMY", 
+  "BRAINPOP", 
+  "BRAINPOP ELL", 
+  "GIZMOS", 
+  "GRAMMARLY", 
+  "IXL", 
+  "IXLSPAN", 
+  "OFFICE365", 
+  "MINECRAFT", 
+  "MOBY", 
+  "PRODIGY", 
+  "REGGSMATH", 
+  "SHMOOP", 
+  "TUTORME"];
 
-    var array = yamm_tab.getRange("A1:A").getValues();
-    var new_array = [];
+var yamm_subs = 
+["ABC Mouse", 
+  "AR", 
+  "Adobe", 
+  "Adventure", 
+  "BrainPOP-Student", 
+  "BrainPOP-ELL", 
+  "Gizmos", 
+  "Grammarly", 
+  "IXL-Student",
+  "IXL Spanish", 
+  "Office", 
+  "Minecraft", 
+  "Moby-Student", 
+  "Prodigy", 
+  "RE/MS", 
+  "Shmoop", 
+  "TutorMe"];
 
-    //Find the array length of the yamm tab
-    for (i = 0; i <array.length ; i++){
 
-        if (array[i][0] != ""){
-      new_array.push(array[i][0]);
-      }
-    }
-        
-    var csv_array = email_tab.getRange("D2:D").getValues();
-    var csv_new_array = [];
-    //Find the array length of the CSV Email tab. 
-    for (i = 0; i <csv_array.length ; i++){
-      
-        if (csv_array[i][0] != ""){
-        csv_new_array.push(csv_array[i][0]);
-      }
-    }
-    
-//Get the destination range on the YAMM tab using the combination of new arrays from the YAMM and CSV tabs
+for (x = 0; x< yamm_subs.length; x++){
 
-var get_data = email_tab.getRange("C2:"+"G"+(csv_new_array.length+1)).getValues();
-var paste_data = yamm_tab.getRange("A"+(new_array.length+1)+":"+"E"+(csv_new_array.length+new_array.length)).setValues(get_data);
+
+
+var filter_function = function(item){
+  if (item.indexOf(csv_subs[x]) === -1){return false;}
+  else{return true;}
 }
+
+
+var emails = open_csv_auto.getSheetByName("a la carte").getRange("A2:R").getValues().filter(filter_function);
+
+for (i=0; i<emails.length; i++){
+  if(emails[i][7] == ""){continue}
+  var student_first = emails[i][2];
+  var student_last = emails[i][3];
+  var student_email = emails[i][11];
+  var parent_email = emails[i][12];
+  var hst_email = emails[i][17];
+  var array = [[student_first, student_last, student_email, parent_email, hst_email]];
+  var yamm_tab = open_yamm_merger.getSheetByName(yamm_subs[x]).getRange("A1:A").getValues();
+
+    var filter_yamm = function(yamm){
+      if (yamm.indexOf("") === 0){return false;}
+      else {return true;}
+    }
+  var yamm_tab_row = yamm_tab.filter(filter_yamm).length;
+  open_yamm_merger.getSheetByName(yamm_subs[x]).getRange(yamm_tab_row+1, 1, 1, 5).setValues(array);
   
+  }
+
+}
 
 }
 
