@@ -62,10 +62,19 @@ function sort_new_report() {
   sheet.getDataRange().setFontFamily("Poppins");
 
   sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns()).activate();
-  spreadsheet.getActiveRange().offset(1, 0, spreadsheet.getActiveRange().getNumRows() - 1).sort([{column: 23, ascending: true}, {column: 21, ascending: true}, {column: 6, ascending: true}]);
+  spreadsheet.getActiveRange().offset(1, 0, spreadsheet.getActiveRange().getNumRows() - 1).sort([{column: 19, ascending: true}, {column: 22, ascending: true}, {column: 6, ascending: true}]);
   spreadsheet.getActiveRange().offset(1, 0, spreadsheet.getActiveRange().getNumRows() - 1).activate();
   spreadsheet.getActiveRange().removeDuplicates([13]).activate();
+  sheet.getRange("A2:X").sort(1);
 
+    var filter_preferred = function(self){
+      if(self.indexOf("") === -1){return true;}
+      else{return false;}
+    }
+  
+  var preferred_names = sheet.getRange("A2:A").getValues().filter(filter_preferred);
+  Logger.log(preferred_names.length);
+  sheet.getRange(2, 2, preferred_names.length, 1).setValues(preferred_names);
   
 
 };
@@ -80,7 +89,7 @@ function delete_Rows(){
   var rowsDeleted = 0;
     for (var i = 0; i <= numRows - 1; i++){
       var row = values[i];
-      if (row[22] == '' && row[21] != ''){
+      if (row[18] == ''){
         sheet.deleteRow((parseInt(i)+1) - rowsDeleted);
         rowsDeleted++
       }
